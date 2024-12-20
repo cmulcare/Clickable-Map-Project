@@ -1,0 +1,123 @@
+document.addEventListener("DOMContentLoaded", () => {
+  const mapObject = document.getElementById("mapSVG");
+
+  // Ensure the SVG is loaded before accessing its content
+  mapObject.addEventListener("load", () => {
+    console.log("SVG Loaded Successfully");
+
+    const svgDoc = mapObject.contentDocument; // Access the inner SVG document
+    if (!svgDoc) {
+      console.error("Failed to load SVG content. Check the object source or CORS settings.");
+      return;
+    }
+
+    const statesGroup = svgDoc.getElementById("States");
+    if (!statesGroup) {
+      console.error("Could not find the 'States' group in the SVG. Check the structure of your SVG.");
+      return;
+    }
+
+    const states = statesGroup.querySelectorAll("g"); // Select all <g> elements (states)
+    console.log(`Found ${states.length} states in the SVG`);
+
+    const infoBox = document.getElementById("info-box");
+    if (!infoBox) {
+      console.error("Info box element not found in the DOM.");
+      return;
+    }
+
+    // Data for each state
+    const stateInfo = {
+      Alabama: "Alabama",
+      Alaska: "Alaska",
+      Arizona: "Arizona",
+      Arkansas: "Arkansas",
+      California: "California",
+      Colorado: "Colorado",
+      Connecticut: "Connecticut",
+      Delaware: "Delaware",
+      Florida: "Florida",
+      Georgia: "Georgia",
+      Hawaii: "Hawaii",
+      Idaho: "Idaho",
+      Illinois: "Illinois",
+      Indiana: "Indiana",
+      Iowa: "Iowa",
+      Kansas: "Kansas",
+      Kentucky: "Kentucky",
+      Louisiana: "Louisiana",
+      Maine: "Maine",
+      Maryland: "Maryland",
+      Massachusetts: "Massachusetts",
+      Michigan: "Michigan",
+      Minnesota: "Minnesota",
+      Mississippi: "Mississippi",
+      Missouri: "Missouri",
+      Montana: "Montana",
+      Nebraska: "Nebraska",
+      Nevada: "Nevada",
+      New_Hampshire: "New Hampshire",
+      New_Jersey: "New Jersey",
+      New_Mexico: "New Mexico",
+      New_York: "New York",
+      North_Carolina: "North Carolina",
+      North_Dakota: "North Dakota",
+      Ohio: "Ohio",
+      Oklahoma: "Oklahoma",
+      Oregon: "Oregon",
+      Pennsylvania: "Pennsylvania",
+      Rhode_Island: "Rhode Island",
+      South_Carolina: "South Carolina",
+      South_Dakota: "South Dakota",
+      Tennessee: "Tennessee",
+      Texas: "Texas",
+      Utah: "Utah",
+      Vermont: "Vermont",
+      Virginia: "Virginia",
+      Washington: "Washington",
+      Washington_DC: "Washington, D.C.",
+      West_Virginia: "West Virginia",
+      Wisconsin: "Wisconsin",
+      Wyoming: "Wyoming",
+    };
+
+    states.forEach(state => {
+      const stateId = state.id;
+      console.log(`Processing state: ${stateId}`);
+
+      // Hover effect
+      state.addEventListener("mouseenter", () => {
+        console.log(`Hovering over state: ${stateId}`);
+        const path = state.querySelector("path");
+        if (path) {
+          path.style.fill = "#ff6347";
+        } else {
+          console.warn(`No <path> found inside state group: ${stateId}`);
+        }
+      });
+
+      state.addEventListener("mouseleave", () => {
+        const path = state.querySelector("path");
+        if (path) {
+          path.style.fill = "";
+        }
+      });
+
+      // Click event to display state info
+      state.addEventListener("click", () => {
+        console.log(`Clicked on state: ${stateId}`);
+        const info = stateInfo[stateId] || "No information available.";
+        infoBox.style.display = "block";
+        infoBox.textContent = `${stateId}: ${info}`;
+      });
+    });
+
+    // Hide info box when clicking outside the map
+    document.addEventListener("click", (e) => {
+      if (!e.target.closest("object")) {
+        console.log("Clicked outside the map. Hiding info box.");
+        infoBox.style.display = "none";
+      }
+    });
+  });
+});
